@@ -105,6 +105,7 @@ class RouterosController extends Controller
 
     public function check_routeros_connection($data)
     {
+
         $routeros_db = RouterOs::where('ip_address', $data['ip_address'])->get();
 
         if (count($routeros_db) > 0):
@@ -119,10 +120,10 @@ class RouterosController extends Controller
             $this->connection = $connection;
 
             // Get connected users from active hotspot
-            $active_users = $API->comm('/ip/hotspot/active/print');
+            // $active_users = $API->comm('/ip/hotspot/active/print');
 
             // OR for PPP connections (optional)
-            // $active_users = $API->comm('/ppp/active/print');
+            $active_users = $API->comm('/ppp/active/print');
 
             // Get interface traffic stats (Rx, Tx)
             $interface_traffic = $API->comm('/interface/print');
@@ -295,7 +296,7 @@ class RouterosController extends Controller
             if ($this->check_routeros_connection($request->all())):
                 $add_dns = $this->API->comm('/ip/dns/set', [
                     'servers' => $request->servers,
-                    'allow-remote-requests' => $request->remote_requests
+                    'allow-remote-requests' => 'yes'
                 ]);
 
                 $dns_lists = $this->API->comm('/ip/dns/print');
